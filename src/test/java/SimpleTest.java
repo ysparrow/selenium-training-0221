@@ -1,10 +1,11 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class SimpleTest {
 
@@ -12,8 +13,17 @@ public class SimpleTest {
 
     @BeforeEach
     void setUp() {
+
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+
+        ChromeOptions opts = new ChromeOptions();
+        opts.setCapability("acceptInsecureCerts", true);
+        opts.addArguments("start-fullscreen");
+        opts.setExperimentalOption("w3c",false);
+
+        driver = new ChromeDriver(opts);
+
+        System.out.println(((HasCapabilities) driver).getCapabilities());
     }
 
     @AfterEach
