@@ -35,4 +35,11 @@ public class TestBase {
                 }));
     }
 
+    public String getTestURL() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("test.html").getFile());
+        return "file:///"+
+                file.getAbsolutePath();
+    }
+
 }
