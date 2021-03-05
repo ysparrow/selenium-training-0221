@@ -25,6 +25,7 @@ public class MutableInteractions extends TestBase {
         curr.selectByIndex(2);
         curr.selectByValue("UAH");
 
+
     }
 
     @Test
