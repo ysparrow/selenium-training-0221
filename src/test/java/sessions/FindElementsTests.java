@@ -27,7 +27,7 @@ public class FindElementsTests {
     @Test
     void findElement() throws InterruptedException {
 
-        drv.get("http://158.101.173.161/");
+        drv.get("https://google.com");
 
        if (isElementPresent(drv, By.cssSelector("li.account.dropdown")))
        {

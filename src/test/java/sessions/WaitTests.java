@@ -31,7 +31,7 @@ public class WaitTests {
 
         System.out.println("Started at: " + startTime);
 
-        drv.get("http://158.101.173.161/");
+        drv.get("https://google.com");
 
         if (!isElementPresent(drv, By.cssSelector("li.a5ccount.dropdown")))
             System.out.println("Element Present");
