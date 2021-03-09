@@ -5,10 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
-import java.net.MalformedURLException;
-
-public class TestBase {
+public class TestBase extends TestSettings {
 
     public static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
     public WebDriver driver;
@@ -34,12 +31,4 @@ public class TestBase {
                     driver = null;
                 }));
     }
-
-    public String getTestURL() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("test.html").getFile());
-        return "file:///"+
-                file.getAbsolutePath();
-    }
-
 }

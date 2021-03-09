@@ -3,10 +3,11 @@ package sessions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -29,14 +30,11 @@ public class FindElementsTests {
 
         drv.get("https://google.com");
 
-       if (isElementPresent(drv, By.cssSelector("li.account.dropdown")))
-       {
-           System.out.println("Element is present");
-       }
-       else
-       {
-           System.out.println("Element is absent");
-       }
+        if (isElementPresent(drv, By.cssSelector("li.account.dropdown"))) {
+            System.out.println("Element is present");
+        } else {
+            System.out.println("Element is absent");
+        }
 
     }
 
@@ -46,7 +44,7 @@ public class FindElementsTests {
 
         drv.get("https://www.google.com/");
 
-        WebDriverWait wait = new WebDriverWait(drv,10);
+        WebDriverWait wait = new WebDriverWait(drv, 10);
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[name=q]")));
 
@@ -85,10 +83,9 @@ public class FindElementsTests {
     }
 
 
-    public boolean isElementPresent(WebDriver drv, By locator)
-    {
+    public boolean isElementPresent(WebDriver drv, By locator) {
 
-        return  drv.findElements(locator).size()>0;
+        return drv.findElements(locator).size() > 0;
 //
 //        try {
 //            drv.findElement(locator);

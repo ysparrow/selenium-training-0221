@@ -130,11 +130,9 @@ public class ImmutableInteractions extends TestBase {
         cr = driver;
         cr.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-        String url = "";
-
-        ff.get(url);
-        ie.get(url);
-        cr.get(url);
+        ff.get(getBASE_URL());
+        ie.get(getBASE_URL());
+        cr.get(getBASE_URL());
     }
 
     @AfterEach
