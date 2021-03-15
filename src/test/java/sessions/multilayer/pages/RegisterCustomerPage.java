@@ -7,27 +7,21 @@ import org.openqa.selenium.support.ui.Select;
 import sessions.multilayer.application.ApplicationContext;
 import sessions.multilayer.data.Customer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-
-public class RegisterCustomerPage extends Page{
+public class RegisterCustomerPage extends Page {
 
     public RegisterCustomerPage(ApplicationContext appContext) {
         super(appContext);
     }
 
-
-    public RegisterCustomerPage open()
-    {
+    public RegisterCustomerPage open() {
         driver.get(appContext.getBaseUrl() + "/en/create_account");
         return this;
     }
 
     public RegisterCustomerPage logout() {
-        driver.get(appContext.getBaseUrl() +"/logout");
+        driver.get(appContext.getBaseUrl() + "/logout");
         return this;
     }
-
 
     public RegisterCustomerPage registerNewCustomer(Customer customer) {
 
@@ -49,12 +43,15 @@ public class RegisterCustomerPage extends Page{
         driver.findElement(By.cssSelector("#box-create-account input[name=confirmed_password]")).sendKeys(customer.getPassword());
         driver.findElement(By.name("terms_agreed")).click();
         driver.findElement(By.name("create_account")).click();
-
-        assertThat(wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".alert.alert-success"))).getText(),
-                containsString("Your customer account has been created."));
         return this;
     }
 
+    public String getAlertMessageText() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".alert.alert-success"))).getText();
+    }
 
-
+    public boolean isCustomerLoggedOut()
+    {
+        return wait.until(ExpectedConditions.textToBe(By.cssSelector("li.account.dropdown > a"),"Sign In"));
+    }
 }

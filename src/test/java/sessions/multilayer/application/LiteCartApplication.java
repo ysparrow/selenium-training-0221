@@ -50,10 +50,23 @@ public class LiteCartApplication {
     }
 
     public void registerNewCustomer(Customer customer) {
-        registerCustomerPage.open().registerNewCustomer(customer).logout();
+        registerCustomerPage.open().registerNewCustomer(customer);
     }
+
+    public boolean isCustomerLoggedOut() {
+        return registerCustomerPage.isCustomerLoggedOut();
+    }
+
+    public void customerLogout() {
+        registerCustomerPage.logout();
+    }
+
 
     public void closeApp() {
         driver.quit();
+    }
+
+    public String getAlertMessage() {
+        return registerCustomerPage.getAlertMessageText();
     }
 }

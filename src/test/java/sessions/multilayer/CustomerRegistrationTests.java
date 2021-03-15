@@ -14,12 +14,23 @@ public class CustomerRegistrationTests extends CommonTest {
     @ParameterizedTest
     @MethodSource("customersProvider")
     public void canRegisterCustomer(Customer customer) {
+
         app.loginToAdminPane();
+
         Set<String> oldIds = app.getCustomerIds();
+
         app.registerNewCustomer(customer);
+
+        assertThat(app.getAlertMessage(), containsString("Your customer account has been created."));
+
+        app.customerLogout();
+
+        assertThat("Customer should be logged out", app.isCustomerLoggedOut(), equalTo (true) );
+
         Set<String> newIds = app.getCustomerIds();
-        assertThat(oldIds, everyItem(is(in(newIds))));
-        assertThat(newIds.size(), equalTo(oldIds.size() + 1));
+
+        assertThat("All old customers should be present in list", oldIds, everyItem(is(in(newIds))));
+        assertThat("Customers count should increase", newIds.size(), equalTo(oldIds.size() + 1));
     }
 
 }
