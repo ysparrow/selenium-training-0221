@@ -13,15 +13,15 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class LiteCartApplication {
 
-    public static WebDriver driver;
-    public static WebDriverWait wait;
-    public String BASE_URL = "http://158.101.173.161";
-    public String LOGIN_NAME = "testadmin";
-    public String LOGIN_PASS = "R8MRDAYT_test";
+    private static WebDriver driver;
+    private static WebDriverWait wait;
+    private static final String BASE_URL = "http://158.101.173.161";
+    private static String LOGIN_NAME = "testadmin";
+    private static String LOGIN_PASS = "R8MRDAYT_test";
 
     public LiteCartApplication() {
         driver = new ChromeDriver();
