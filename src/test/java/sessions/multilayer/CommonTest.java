@@ -12,14 +12,13 @@ public class CommonTest {
     static LiteCartApplication app;
 
     @BeforeAll
-    public static void startDriver() {
+    public static void startApplication() {
      app = new LiteCartApplication();
     }
 
     @AfterAll
-    public static void stopDriver() {
-        app.quit();
-    }
+    public static void stopApplication() {
+        app.closeApp(); }
 
     static Stream<Customer> customersProvider() {
         return Stream.of(

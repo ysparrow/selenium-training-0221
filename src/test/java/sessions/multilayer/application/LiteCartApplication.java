@@ -6,82 +6,54 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import sessions.multilayer.CustomerRegistrationTests;
 import sessions.multilayer.data.Customer;
+import sessions.multilayer.pages.AdminCustomersPage;
+import sessions.multilayer.pages.AdminPanePage;
+import sessions.multilayer.pages.RegisterCustomerPage;
 
 import java.util.Set;
-
-import static java.util.stream.Collectors.toSet;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-
 
 public class LiteCartApplication {
 
     private static WebDriver driver;
-    private static WebDriverWait wait;
-    private static final String BASE_URL = "http://158.101.173.161";
-    private static String LOGIN_NAME = "testadmin";
-    private static String LOGIN_PASS = "R8MRDAYT_test";
+
+    private  final String BASE_URL = "http://158.101.173.161";
+    private  final String LOGIN_NAME = "testadmin";
+    private  final String LOGIN_PASS = "R8MRDAYT_test";
+
+    private final AdminPanePage adminPanePage;
+    private final AdminCustomersPage adminCustomersPage;
+    private final RegisterCustomerPage registerCustomerPage;
+
 
     public LiteCartApplication() {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, 5);
-    }
 
-    public void quit() {
-        driver.quit();
-    }
+        ApplicationContext appContext = new ApplicationContext();
+        appContext.setDriver(driver);
+        appContext.setBaseUrl(BASE_URL);
+        appContext.setAppUser(new ApplicationContext.AppUser(LOGIN_NAME,LOGIN_PASS));
 
-    private void logout() {
-        driver.get(BASE_URL +"/logout");
-    }
-
-    public Set<String> getCustomerIds() {
-        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
-        return driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
+        adminPanePage = new AdminPanePage(appContext);
+        adminCustomersPage = new AdminCustomersPage(appContext);
+        registerCustomerPage = new RegisterCustomerPage(appContext);
     }
 
     public void loginToAdminPane() {
-        driver.get(BASE_URL + "/admin");
-        if (driver.findElements(By.id("box-login")).size() > 0) {
-            driver.findElement(By.name("username")).sendKeys(LOGIN_NAME);
-            driver.findElement(By.name("password")).sendKeys(LOGIN_PASS);
-            driver.findElement(By.name("password")).submit();
-            wait.until((WebDriver d) -> d.findElement(By.id("box-apps-menu")));
-        }
+        adminPanePage.open().login();
+    }
+
+    public Set<String> getCustomerIds() {
+        return adminCustomersPage.open().getCustomerIds();
     }
 
     public void registerNewCustomer(Customer customer) {
-        driver.get(BASE_URL + "/en/create_account");
-
-        if (isElementPresent(By.name("decline_cookies"))) {
-            driver.findElement(By.name("decline_cookies")).click();
-        }
-
-        driver.findElement(By.name("firstname")).sendKeys(customer.getFirstName());
-        driver.findElement(By.name("lastname")).sendKeys(customer.getLastName());
-        driver.findElement(By.name("address1")).sendKeys(customer.getAddress());
-        driver.findElement(By.name("postcode")).sendKeys(customer.getPostcode());
-        driver.findElement(By.name("city")).sendKeys(customer.getCity());
-        new Select(driver.findElement(By.cssSelector("select[name=country_code]"))).selectByValue(customer.getCountry());
-        wait.until((WebDriver d) -> d.findElement(By.cssSelector("select[name=zone_code] option[value=" + customer.getZone() + "]")));
-        new Select(driver.findElement(By.cssSelector("select[name=zone_code]"))).selectByValue(customer.getZone());
-        driver.findElement(By.cssSelector("#box-create-account input[name=email]")).sendKeys(customer.getEmail());
-        driver.findElement(By.name("phone")).sendKeys(customer.getPhone());
-        driver.findElement(By.cssSelector("#box-create-account input[name=password]")).sendKeys(customer.getPassword());
-        driver.findElement(By.cssSelector("#box-create-account input[name=confirmed_password]")).sendKeys(customer.getPassword());
-        driver.findElement(By.name("terms_agreed")).click();
-        driver.findElement(By.name("create_account")).click();
-
-        assertThat(wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".alert.alert-success"))).getText(),
-                containsString("Your customer account has been created."));
-        logout();
+        registerCustomerPage.open().registerNewCustomer(customer).logout();
     }
 
-    private boolean isElementPresent(By element) {
-        return driver.findElements(element).size() > 0;
+    public void closeApp() {
+        driver.quit();
     }
 }
