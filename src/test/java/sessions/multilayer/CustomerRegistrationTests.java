@@ -61,6 +61,12 @@ public class CustomerRegistrationTests extends CommonTest {
         assertThat(wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".alert.alert-success"))).getText(),
                 containsString("Your customer account has been created."));
 
+        driver.get(BASE_URL +"/logout");
+        assertTrue(
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("li.account.dropdown > a")))
+                        .getText()
+                        .contains("Sign In"));
+
         driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
         Set<String> newIds = driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
                 .map(e -> e.findElements(By.tagName("td")).get(2).getText())
