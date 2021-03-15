@@ -1,63 +1,41 @@
 package sessions.multilayer;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CustomerRegistrationTests {
-
-    public static WebDriver driver;
-    public static WebDriverWait wait;
-
-    @BeforeAll
-    public static void startDriver() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, 5);
-    }
-
-    @AfterAll
-    public static void stopDriver() {
-        driver.quit();
-    }
+public class CustomerRegistrationTests extends CommonTest {
 
     @Test
     public void canRegisterCustomer() {
 
-        driver.get("http://158.101.173.161/admin");
+        driver.get(BASE_URL + "/admin");
 
         if (driver.findElements(By.id("box-login")).size() > 0) {
-            driver.findElement(By.name("username")).sendKeys("testadmin");
-            driver.findElement(By.name("password")).sendKeys("R8MRDAYT_test");
+            driver.findElement(By.name("username")).sendKeys(LOGIN_NAME);
+            driver.findElement(By.name("password")).sendKeys(LOGIN_PASS);
             driver.findElement(By.name("password")).submit();
             wait.until((WebDriver d) -> d.findElement(By.id("box-apps-menu")));
         }
 
-        driver.get("http://158.101.173.161/admin/?app=customers&doc=customers");
+        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
         Set<String> oldIds = driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
                 .map(e -> e.findElements(By.tagName("td")).get(2).getText())
                 .collect(toSet());
 
 
         String email = "testAuto" + System.currentTimeMillis() + "@smith.me";
-        driver.get("http://158.101.173.161/en/create_account");
+        driver.get(BASE_URL + "/en/create_account");
 
-        if (isElementPresent(By.name("decline_cookies")))
-        {
+        if (isElementPresent(By.name("decline_cookies"))) {
             driver.findElement(By.name("decline_cookies")).click();
         }
 
@@ -80,16 +58,16 @@ public class CustomerRegistrationTests {
                 containsString("Your customer account has been created."));
 
 
-        driver.get("http://158.101.173.161/admin/?app=customers&doc=customers");
+        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
         Set<String> newIds = driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
                 .map(e -> e.findElements(By.tagName("td")).get(2).getText())
                 .collect(toSet());
 
         assertThat(oldIds, everyItem(is(in(newIds))));
-        assertThat(newIds.size(), equalTo(oldIds.size()+1));
+        assertThat(newIds.size(), equalTo(oldIds.size() + 1));
     }
 
     private boolean isElementPresent(By element) {
-        return driver.findElements(element).size() >0;
+        return driver.findElements(element).size() > 0;
     }
 }
