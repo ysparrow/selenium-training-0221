@@ -66,7 +66,7 @@ public class LiteCartApplication {
         driver.quit();
     }
 
-    public String getAlertMessage() {
-        return registerCustomerPage.getAlertMessageText();
+    public boolean isCustomerRegisteredMessageShown() {
+        return registerCustomerPage.isCustomerRegisteredMessageShown();
     }
 }

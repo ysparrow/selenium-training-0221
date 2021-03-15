@@ -21,7 +21,7 @@ public class CustomerRegistrationTests extends CommonTest {
 
         app.registerNewCustomer(customer);
 
-        assertThat(app.getAlertMessage(), containsString("Your customer account has been created."));
+        assertThat("Customer should be successfully registered",app.isCustomerRegisteredMessageShown(),equalTo (true));
 
         app.customerLogout();
 
