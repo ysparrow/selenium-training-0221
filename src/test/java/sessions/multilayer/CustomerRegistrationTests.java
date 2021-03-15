@@ -1,6 +1,5 @@
 package sessions.multilayer;
 
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
@@ -8,10 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import sessions.multilayer.data.Customer;
-
 import java.util.Set;
 import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -22,21 +19,40 @@ public class CustomerRegistrationTests extends CommonTest {
     @ParameterizedTest
     @MethodSource("customersProvider")
     public void canRegisterCustomer(Customer customer) {
+        loginToAdminPane();
+        Set<String> oldIds = getCustomerIds();
+        registerNewCustomer (customer);
+        Set<String> newIds = getCustomerIds();
+        assertThat(oldIds, everyItem(is(in(newIds))));
+        assertThat(newIds.size(), equalTo(oldIds.size() + 1));
+    }
 
+    private void logout() {
+        driver.get(BASE_URL +"/logout");
+        assertTrue(
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("li.account.dropdown > a")))
+                        .getText()
+                        .contains("Sign In"));
+    }
+
+    private Set<String> getCustomerIds() {
+        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
+        return driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
+                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
+                .collect(toSet());
+    }
+
+    private void loginToAdminPane() {
         driver.get(BASE_URL + "/admin");
-
         if (driver.findElements(By.id("box-login")).size() > 0) {
             driver.findElement(By.name("username")).sendKeys(LOGIN_NAME);
             driver.findElement(By.name("password")).sendKeys(LOGIN_PASS);
             driver.findElement(By.name("password")).submit();
             wait.until((WebDriver d) -> d.findElement(By.id("box-apps-menu")));
         }
+    }
 
-        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
-        Set<String> oldIds = driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
-
+    private void registerNewCustomer(Customer customer) {
         driver.get(BASE_URL + "/en/create_account");
 
         if (isElementPresent(By.name("decline_cookies"))) {
@@ -60,22 +76,8 @@ public class CustomerRegistrationTests extends CommonTest {
 
         assertThat(wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".alert.alert-success"))).getText(),
                 containsString("Your customer account has been created."));
-
-        driver.get(BASE_URL +"/logout");
-        assertTrue(
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("li.account.dropdown > a")))
-                        .getText()
-                        .contains("Sign In"));
-
-        driver.get(BASE_URL + "/admin/?app=customers&doc=customers");
-        Set<String> newIds = driver.findElements(By.cssSelector("table.data-table tbody > tr")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
-
-        assertThat(oldIds, everyItem(is(in(newIds))));
-        assertThat(newIds.size(), equalTo(oldIds.size() + 1));
+        logout();
     }
-
 
     static Stream<Customer> customersProvider() {
         return Stream.of(
