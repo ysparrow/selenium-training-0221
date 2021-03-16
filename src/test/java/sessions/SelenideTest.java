@@ -16,7 +16,7 @@ public class SelenideTest {
 
     @BeforeEach
     public void start() {
-        Configuration.driverManagerEnabled = false;
+        //Configuration.driverManagerEnabled = false;
         //Configuration.browser="firefox";
     }
 
