@@ -1,5 +1,6 @@
 package sessions.multilayer.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -53,6 +54,7 @@ public class RegisterCustomerPage extends Page {
         PageFactory.initElements(driver, this);
     }
 
+    @Step
     public RegisterCustomerPage open() {
         driver.get(appContext.getBaseUrl() + "/en/create_account");
 
@@ -63,11 +65,13 @@ public class RegisterCustomerPage extends Page {
         return this;
     }
 
+    @Step
     public RegisterCustomerPage logout() {
         driver.get(appContext.getBaseUrl() + "/logout");
         return this;
     }
 
+    @Step
     public RegisterCustomerPage registerNewCustomer(Customer customer) {
         firstnameInput.sendKeys(customer.getFirstName());
         lastnameInput.sendKeys(customer.getLastName());

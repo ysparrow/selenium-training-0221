@@ -12,6 +12,7 @@ allure {
     }
 }
 
+sourceCompatibility = 1.8
 
 group 'com.test'
 version '1.0-SNAPSHOT'
